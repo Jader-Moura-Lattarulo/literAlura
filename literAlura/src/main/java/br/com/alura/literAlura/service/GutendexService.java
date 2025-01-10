@@ -1,20 +1,21 @@
 package br.com.alura.literAlura.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import br.com.alura.literAlura.dto.Book;
+import br.com.alura.literAlura.dto.Response;
+import br.com.alura.literAlura.ui.Display;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
+@Service
 public class GutendexService {
-    @Autowired
-    private RestTemplate restTemplate;
+    String url = "https://gutendex.com/books?search=";
+    RestTemplate restTemplate = new RestTemplate();
 
-    private static final String BASE_URL = "https://gutendex.com/books/";
+    public void fetchBooks(String bookToBeSought) {
+        Response response = restTemplate.getForObject(url + bookToBeSought, Response.class);
 
-    public String searchBooksById(Long id) {
-        String url = UriComponentsBuilder.fromHttpUrl(BASE_URL)
-                .path(String.valueOf(id))
-                .toUriString();
-
-        return restTemplate.getForObject(url, String.class);
+        if (response != null && response.getResults() != null) {
+            response.getResults().forEach(Display::showBookInformation);
+        }
     }
 }

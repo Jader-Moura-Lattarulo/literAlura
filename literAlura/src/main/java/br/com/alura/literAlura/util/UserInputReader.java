@@ -6,7 +6,7 @@ public class UserInputReader {
     private static final Scanner scanner = new Scanner(System.in);
 
     public static String getUserInputString(){
-        return scanner.nextLine();
+        return scanner.nextLine().replace(" ", "+");
     }
 
     public static int getUserInputInt() {

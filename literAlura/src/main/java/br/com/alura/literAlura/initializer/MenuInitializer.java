@@ -1,34 +1,47 @@
 package br.com.alura.literAlura.initializer;
 
+import br.com.alura.literAlura.service.GutendexService;
 import br.com.alura.literAlura.ui.Display;
 import br.com.alura.literAlura.util.UserInputReader;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class MenuInitializer {
+
+    private final GutendexService gutendexService;
+
+    @Autowired
+    public MenuInitializer(GutendexService gutendexService) {
+        this.gutendexService = gutendexService;
+    }
 
     public static void menu(){
         String userChoice = "";
+
+        MenuInitializer menuInitializer = new MenuInitializer(new GutendexService());
 
         while (!userChoice.equals("0")) {
             Display.firstMenu();
             userChoice = UserInputReader.getUserInputString();
 
             switch (userChoice) {
-                case "1" -> menuChoice01();
+                case "1" -> menuInitializer.menuChoice01();
                 case "2" -> menuChoice02();
                 case "3" -> menuChoice03();
                 case "4" -> menuChoice04();
                 case "5" -> menuChoice05();
-                case "0" -> Display.goodByeMessage();
+                case "0" -> menuChoice06();
                 default -> Display.makeAValidChoiceMessage();
             }
         }
     }
 
-    public static void menuChoice01(){
+    public void menuChoice01(){
         System.out.println("Você escolheu - Buscar livro pelo título");
         System.out.println("Entre com o título que quer buscar: ");
         String bookToBeSought = UserInputReader.getUserInputString();
-        System.out.println("Livro a ser buscado: " + bookToBeSought);
+        gutendexService.fetchBooks(bookToBeSought);
     }
 
     public static void menuChoice02(){
@@ -53,5 +66,10 @@ public class MenuInitializer {
         System.out.println("Entre com o idioma dos livros que quer buscar: ");
         String booksWithLanguage = UserInputReader.getUserInputString();
         System.out.println("Segue a lista de livros no idioma: " + booksWithLanguage);
+    }
+
+    public static void menuChoice06(){
+        Display.goodByeMessage();
+        System.exit(0);
     }
 }
